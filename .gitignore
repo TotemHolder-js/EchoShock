@@ -1,5 +1,4 @@
 node_modules
-<<<<<<< HEAD
 target
 dist
 logs
@@ -11,7 +10,4 @@ public
 .next
 yarn-error.log
 npm-debug.log
-=======
 .env.local
-.next/
->>>>>>> e5065aeb381b6f0ea917433b9891e6d8611fd14c
