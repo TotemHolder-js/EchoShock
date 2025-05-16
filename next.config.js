@@ -4,6 +4,7 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'your-supabase-project.supabase.co'],
   },
+<<<<<<< HEAD
   webpack(config) {
     // 1) Exclude .svg from Next.js default asset loader
     config.module.rules.forEach((rule) => {
@@ -41,3 +42,8 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+=======
+}
+
+module.exports = nextConfig
+>>>>>>> e5065aeb381b6f0ea917433b9891e6d8611fd14c

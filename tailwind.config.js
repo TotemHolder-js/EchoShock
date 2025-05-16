@@ -1,11 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+<<<<<<< HEAD
     darkMode: ['class'],
     content: [
+=======
+  content: [
+>>>>>>> e5065aeb381b6f0ea917433b9891e6d8611fd14c
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+<<<<<<< HEAD
   	extend: {
   		colors: {
   			'wood-dark': '#2C1810',
@@ -68,4 +73,17 @@ module.exports = {
   	}
   },
   plugins: [require("tailwindcss-animate")],
+=======
+    extend: {
+      colors: {
+        'wood-dark': '#2C1810',
+        'wood-medium': '#3C2820',
+        'wood-light': '#4C3830',
+        'text-light': 'rgba(255, 248, 240, 0.7)',
+        'spiritual-yellow': 'rgba(255, 223, 128, 0.4)',
+      },
+    },
+  },
+  plugins: [],
+>>>>>>> e5065aeb381b6f0ea917433b9891e6d8611fd14c
 }
