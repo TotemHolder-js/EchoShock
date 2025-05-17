@@ -74,12 +74,14 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
 
   const handleSignInClick = (e: React.MouseEvent) => {
     e.preventDefault()
+    console.log('LAYOUT: Sign In button clicked')
     setShowSignUp(false)
     setShowSignIn(true)
   }
 
   const handleSignUpClick = (e: React.MouseEvent) => {
     e.preventDefault()
+    console.log('LAYOUT: Sign Up button clicked')
     setShowSignIn(false)
     setShowSignUp(true)
   }
@@ -98,10 +100,30 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
       {/* Cursor light removed and replaced with hover-glow */}
       <div className='content-wrapper'>
         {/* Sign In Modal */}
-        {showSignIn && <SignInModal onClose={() => setShowSignIn(false)} />}
+        {showSignIn && <SignInModal 
+          onClose={() => {
+            console.log('Closing sign in modal');
+            setShowSignIn(false);
+          }} 
+          onSwitch={() => {
+            console.log('Switching to sign up modal');
+            setShowSignIn(false);
+            setTimeout(() => setShowSignUp(true), 100);
+          }} 
+        />}
 
         {/* Sign Up Modal */}
-        {showSignUp && <SignUpModal onClose={() => setShowSignUp(false)} />}
+        {showSignUp && <SignUpModal 
+          onClose={() => {
+            console.log('Closing sign up modal');
+            setShowSignUp(false);
+          }} 
+          onSwitch={() => {
+            console.log('Switching to sign in modal');
+            setShowSignUp(false);
+            setTimeout(() => setShowSignIn(true), 100);
+          }}
+        />}
 
         <header className='p-4 bg-[#1C0F0A]/90 text-text-light flex justify-between items-center backdrop-blur-sm'>
           <div className='flex items-center space-x-3'>

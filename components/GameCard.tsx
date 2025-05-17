@@ -23,6 +23,7 @@ export default function GameCard({ game }: GameCardProps) {
           alt={game.title}
           fill
           className='object-cover'
+          unoptimized
         />
       </div>
       <div className='p-4'>

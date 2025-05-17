@@ -25,6 +25,28 @@ export default async function handler(
     return res.status(200).json(data)
   }
 
+    // DELETE – Remove a featured game by name
+    if (req.method === "DELETE") {
+      const { name } = req.query;
+      if (typeof name !== "string") {
+        return res
+          .status(400)
+          .json({ error: "Query parameter `name` must be a string" });
+      }
+  
+      const { data, error } = await supabaseAdmin
+        .from("featured_games")
+        .delete()
+        .eq("title", name);
+  
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+      
+      return res.status(200).json(data)
+    }
+  
+
   // POST - Create a new featured game
   if (req.method === "POST") {
     // Validate request body
@@ -56,6 +78,6 @@ export default async function handler(
   }
 
   // Method not allowed
-  res.setHeader("Allow", ["GET", "POST"])
+  res.setHeader("Allow", ["GET", "POST", "DELETE"])
   return res.status(405).json({ error: `Method ${req.method} Not Allowed` })
 }

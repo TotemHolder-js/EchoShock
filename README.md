@@ -78,11 +78,3 @@ echoshock-mvp/
 |--------|------|-------------|
 | GET | /api/featured-games | Fetch all featured games |
 | POST | /api/featured-games | Create a new featured game |
-
-<<<<<<< HEAD
-## License
-
-This project is licensed under the MIT License.
-=======
-
->>>>>>> e5065aeb381b6f0ea917433b9891e6d8611fd14c

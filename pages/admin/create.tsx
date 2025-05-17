@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { useRouter } from "next/router"
 import Layout from "@/components/Layout"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import AuthGuard from "@/components/AuthGuard"
 
 interface FormData {
@@ -55,8 +57,7 @@ export default function CreateGame() {
 
   return (
     <Layout title='Add New Game - EchoShock Admin'>
-      <AuthGuard>
-        <div className='max-w-2xl mx-auto'>
+      <div className='max-w-2xl mx-auto'>
           <h1 className='text-2xl font-bold mb-6 hover-glow'>
             Add New Featured Game
           </h1>
@@ -75,7 +76,7 @@ export default function CreateGame() {
               <label htmlFor='title' className='block text-text-light mb-2'>
                 Game Title
               </label>
-              <input
+              <Input
                 id='title'
                 name='title'
                 type='text'
@@ -110,7 +111,7 @@ export default function CreateGame() {
               <label htmlFor='game_url' className='block text-text-light mb-2'>
                 Game URL
               </label>
-              <input
+              <Input
                 id='game_url'
                 name='game_url'
                 type='url'
@@ -126,7 +127,7 @@ export default function CreateGame() {
               <label htmlFor='image_url' className='block text-text-light mb-2'>
                 Image URL
               </label>
-              <input
+              <Input
                 id='image_url'
                 name='image_url'
                 type='url'
@@ -139,20 +140,20 @@ export default function CreateGame() {
             </div>
 
             <div className='flex justify-end space-x-4 pt-4'>
-              <button
+              <Button
                 type='button'
                 onClick={() => router.push("/admin")}
                 className='bg-transparent border border-text-light/30 hover:bg-[#FFF8F0]/10 text-text-light px-4 py-2 rounded-lg transition-colors duration-300'
               >
                 Cancel
-              </button>
-              <button type='submit' disabled={loading} className='btn'>
+              </Button>
+              <Button type='submit' disabled={loading} className='btn'>
                 {loading ? "Creating..." : "Create Game"}
-              </button>
+              </Button>
             </div>
           </form>
         </div>
-      </AuthGuard>
+
     </Layout>
   )
 }

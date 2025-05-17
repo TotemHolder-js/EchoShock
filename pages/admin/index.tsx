@@ -2,7 +2,9 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next"
 import Link from "next/link"
 import Layout from "@/components/Layout"
-import { getServerSupabase } from "@/lib/supabaseClient"
+import { createClient } from '@/utils/supabase/server-props'
+import { Button } from "@/components/ui/button"
+import { useRouter } from "next/router"
 
 interface Game {
   id: number
@@ -18,6 +20,25 @@ interface AdminProps {
 }
 
 export default function Admin({ games }: AdminProps) {
+
+  const router = useRouter()
+  const handleDeleteClicked = async (id: number) => {
+    console.log('here')
+    try {
+      const response = await fetch(`/api/featured-games/${id}`, {
+        method: "DELETE",
+      });
+    
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to delete game");
+      }
+    
+      router.push("/admin");
+    } catch (err) {
+      console.error(err);
+    }
+  }
   return (
     <Layout title='Admin Dashboard - EchoShock'>
       <div className='max-w-4xl mx-auto'>
@@ -63,6 +84,9 @@ export default function Admin({ games }: AdminProps) {
                       >
                         View
                       </a>
+                      <Button onClick = {() => handleDeleteClicked(game.id)}>
+                        Delete
+                      </Button>
                     </div>
                   </div>
                 </li>
@@ -75,31 +99,18 @@ export default function Admin({ games }: AdminProps) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps<AdminProps> = async (
-  ctx: GetServerSidePropsContext
-) => {
-  const supabase = getServerSupabase(ctx)
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
 
-  if (!session) {
-    return {
-      redirect: {
-        destination: "/auth/signin",
-        permanent: false,
-      },
-    }
-  }
+export const getServerSideProps: GetServerSideProps<AdminProps> = async (ctx) => {
+  const supabase = createClient(ctx)
 
+  // No session check for testing
   const { data: games, error } = await supabase
-    // Provide both table name and row type here so TS knows your Game interface
-    .from<"featured_games", Game>("featured_games")
-    .select("*")
-    .order("created_at", { ascending: false })
+    .from('featured_games')
+    .select('*')
+    .order('created_at', { ascending: false })
 
   if (error) {
-    console.error("Error fetching games:", error)
+    console.error('Error fetching games:', error)
     return { props: { games: [] } }
   }
 
