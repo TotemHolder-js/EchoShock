@@ -25,27 +25,23 @@ export default async function handler(
     return res.status(200).json(data)
   }
 
-    // DELETE – Remove a featured game by name
-    if (req.method === "DELETE") {
-      const { name } = req.query;
-      if (typeof name !== "string") {
-        return res
-          .status(400)
-          .json({ error: "Query parameter `name` must be a string" });
-      }
-  
-      const { data, error } = await supabaseAdmin
-        .from("featured_games")
-        .delete()
-        .eq("title", name);
-  
-      if (error) {
-        return res.status(500).json({ error: error.message });
-      }
-      
-      return res.status(200).json(data)
+  // DELETE – Remove a featured game by name
+  if (req.method === "DELETE") {
+    const { id } = req.body // now comes from JSON
+    const parsedId = parseInt(id?.toString() ?? "", 10)
+
+    if (isNaN(parsedId)) {
+      return res.status(400).json({ error: "`id` must be a number." })
     }
-  
+
+    const { error } = await supabaseAdmin
+      .from("featured_games")
+      .delete()
+      .eq("id", parsedId)
+
+    if (error) return res.status(500).json({ error: error.message })
+    return res.status(200).json({ message: "Deleted successfully" })
+  }
 
   // POST - Create a new featured game
   if (req.method === "POST") {

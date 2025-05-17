@@ -22,11 +22,14 @@ interface AdminProps {
 export default function Admin({ games }: AdminProps) {
 
   const router = useRouter()
+
   const handleDeleteClicked = async (id: number) => {
     console.log('here')
     try {
-      const response = await fetch(`/api/featured-games/${id}`, {
+      const response = await fetch(`/api/featured-games`, {
         method: "DELETE",
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id})
       });
     
       if (!response.ok) {
