@@ -1,49 +1,74 @@
-import { ReactNode, useEffect, useState } from "react"
-import Head from "next/head"
-import Link from "next/link"
+import { ReactNode, useEffect, useState } from 'react'
+import Head from 'next/head'
+import Link from 'next/link'
 import { createClient } from '@/utils/supabase/component'
-import { SignInModal, SignUpModal } from "./AuthModals"
-import { Button } from "@/components/ui/button"
-import Logo from "@/public/icons/logo.svg"
+import { SignInModal, SignUpModal } from './AuthModals'
+import { Button } from '@/components/ui/button'
+import Logo from '@/public/icons/logo.svg'
 import { User } from '@supabase/supabase-js'
-import { Press_Start_2P } from "next/font/google"
+import { Press_Start_2P } from 'next/font/google'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 const pressStart2P = Press_Start_2P({
   weight: '400', // Only one weight is available
   subsets: ['latin'],
   display: 'swap',
-});
+})
 
 interface LayoutProps {
   children: ReactNode
   title?: string
 }
 
-export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
+export default function Layout({ children, title = 'EchoShock' }: LayoutProps) {
   const supabase = createClient()
   const [user, setUser] = useState<User | null>(null)
   const [showSignIn, setShowSignIn] = useState(false)
   const [showSignUp, setShowSignUp] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [profile, setProfile] = useState<{
+    is_admin: boolean
+    user_name: string
+  } | null>(null)
 
   // Get the current user on component mount
   useEffect(() => {
     const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
       setUser(user)
     }
     getUser()
 
     // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null)
-      }
-    )
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
 
     return () => {
       subscription.unsubscribe()
     }
   }, [])
+
+  useEffect(() => {
+    if (!user) {
+      setProfile(null)
+      return
+    }
+
+    supabase
+      .from('profiles')
+      .select('is_admin, user_name')
+      .eq('user_id', user.id)
+      .single()
+      .then(({ data, error }) => {
+        if (error) console.error('Profile fetch error:', error)
+        else setProfile(data)
+      })
+  }, [user])
 
   // Close modals when clicking outside
   useEffect(() => {
@@ -51,31 +76,31 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
       const target = e.target as HTMLElement
       if (showSignIn || showSignUp) {
         // Check if click is outside modal content
-        if (!target.closest(".auth-modal-content")) {
+        if (!target.closest('.auth-modal-content')) {
           setShowSignIn(false)
           setShowSignUp(false)
         }
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
+      document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [showSignIn, showSignUp])
 
   // Close modals when ESC key is pressed
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         setShowSignIn(false)
         setShowSignUp(false)
       }
     }
 
-    document.addEventListener("keydown", handleEscKey)
+    document.addEventListener('keydown', handleEscKey)
     return () => {
-      document.removeEventListener("keydown", handleEscKey)
+      document.removeEventListener('keydown', handleEscKey)
     }
   }, [])
 
@@ -107,30 +132,34 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
       {/* Cursor light removed and replaced with hover-glow */}
       <div className='content-wrapper'>
         {/* Sign In Modal */}
-        {showSignIn && <SignInModal 
-          onClose={() => {
-            console.log('Closing sign in modal');
-            setShowSignIn(false);
-          }} 
-          onSwitch={() => {
-            console.log('Switching to sign up modal');
-            setShowSignIn(false);
-            setTimeout(() => setShowSignUp(true), 100);
-          }} 
-        />}
+        {showSignIn && (
+          <SignInModal
+            onClose={() => {
+              console.log('Closing sign in modal')
+              setShowSignIn(false)
+            }}
+            onSwitch={() => {
+              console.log('Switching to sign up modal')
+              setShowSignIn(false)
+              setTimeout(() => setShowSignUp(true), 100)
+            }}
+          />
+        )}
 
         {/* Sign Up Modal */}
-        {showSignUp && <SignUpModal 
-          onClose={() => {
-            console.log('Closing sign up modal');
-            setShowSignUp(false);
-          }} 
-          onSwitch={() => {
-            console.log('Switching to sign in modal');
-            setShowSignUp(false);
-            setTimeout(() => setShowSignIn(true), 100);
-          }}
-        />}
+        {showSignUp && (
+          <SignUpModal
+            onClose={() => {
+              console.log('Closing sign up modal')
+              setShowSignUp(false)
+            }}
+            onSwitch={() => {
+              console.log('Switching to sign in modal')
+              setShowSignUp(false)
+              setTimeout(() => setShowSignIn(true), 100)
+            }}
+          />
+        )}
 
         <header className='p-4 bg-[#1C0F0A]/90 text-text-light flex justify-between items-center backdrop-blur-sm'>
           <div className='flex items-center space-x-3'>
@@ -141,9 +170,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
               />
             </Link>
             <div className={`${pressStart2P.className}`}>
-              <h1 className='text-xl font-bold hover-glow'>
-                EchoShock
-              </h1>
+              <h1 className='text-xl font-bold hover-glow'>EchoShock</h1>
               <p className='text-sm text-[#FFF8F0]/50 hover-glow'>
                 Level the Playing Field
               </p>
@@ -164,7 +191,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
               <>
                 <Button
                   onClick={handleSignUpClick}
-                  variant="outline"
+                  variant='outline'
                   className='bg-transparent border-[#FFF8F0]/30 text-text-light hover:bg-[#FFF8F0]/10 hover-glow text-2xl'
                 >
                   Sign Up
@@ -178,18 +205,38 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
               </>
             ) : (
               <>
-                {user?.email?.includes("admin") && (
+                {profile?.is_admin && (
                   <Link href='/admin' className='text-text-light hover-glow'>
                     Admin
                   </Link>
                 )}
-                <Button
-                  onClick={() => supabase.auth.signOut()}
-                  variant="ghost"
-                  className='text-text-light hover-glow'
-                >
-                  Log Out
-                </Button>
+
+                <div className='relative'>
+                  <button
+                    onClick={() => setMenuOpen((o) => !o)}
+                    className='p-1 rounded-full hover:bg-[#FFF8F0]/10'
+                  >
+                    <Avatar className='h-8 w-8'>
+                      <AvatarFallback className='bg-transparent text-text-light'>
+                        {profile?.user_name?.[0]?.toUpperCase() ?? '?'}
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+
+                  {menuOpen && (
+                    <div className='absolute right-0 mt-2 w-40 bg-[#1E1E1E] rounded-lg shadow-lg p-4'>
+                      <div className='pb-2 border-b border-[#FFF8F0]/30 text-text-light'>
+                        {profile?.user_name ?? 'Unknown User'}
+                      </div>
+                      <button
+                        onClick={() => supabase.auth.signOut()}
+                        className='mt-2 w-full text-left text-text-light hover:text-white'
+                      >
+                        Log Out
+                      </button>
+                    </div>
+                  )}
+                </div>
               </>
             )}
           </nav>
@@ -201,7 +248,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
           <div className='container mx-auto flex flex-col md:flex-row justify-between items-center'>
             <div className='mb-4 md:mb-0'>
               <p className='hover-glow'>
-                &copy; {new Date().getFullYear()} EchoShock. All rights
+                &copy; {new Date().getFullYear()} EchoShock&trade;. All rights
                 reserved.
               </p>
             </div>
