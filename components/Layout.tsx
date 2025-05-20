@@ -6,6 +6,13 @@ import { SignInModal, SignUpModal } from "./AuthModals"
 import { Button } from "@/components/ui/button"
 import Logo from "@/public/icons/logo.svg"
 import { User } from '@supabase/supabase-js'
+import { Press_Start_2P } from "next/font/google"
+
+const pressStart2P = Press_Start_2P({
+  weight: '400', // Only one weight is available
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 interface LayoutProps {
   children: ReactNode
@@ -133,11 +140,11 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
                 aria-label='EchoShock logo'
               />
             </Link>
-            <div>
-              <h1 className='font-press-start text-xl font-bold hover-glow'>
+            <div className={`${pressStart2P.className}`}>
+              <h1 className='text-xl font-bold hover-glow'>
                 EchoShock
               </h1>
-              <p className='font-press-start text-sm text-[#FFF8F0]/50 hover-glow'>
+              <p className='text-sm text-[#FFF8F0]/50 hover-glow'>
                 Level the Playing Field
               </p>
             </div>
