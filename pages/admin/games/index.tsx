@@ -49,7 +49,7 @@ export default function Admin({ games }: AdminProps) {
           <h1 className='text-2xl font-bold hover-glow'>
             Manage Featured Games
           </h1>
-          <Link href='/admin/create' className='btn'>
+          <Link href='/admin/games/new' className='btn'>
             Add New Game
           </Link>
         </div>

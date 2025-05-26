@@ -47,7 +47,7 @@ export default function CreateGame() {
         throw new Error(errorData.error || "Failed to create game")
       }
 
-      router.push("/admin")
+      router.push("/")
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred")
     } finally {
