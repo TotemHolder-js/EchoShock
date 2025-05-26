@@ -186,6 +186,9 @@ export default function Layout({ children, title = 'EchoShock' }: LayoutProps) {
             <Link href='#' className='text-text-light hover-glow text-2xl'>
               Help Center
             </Link>
+            <Link href='/echoes' className='text-text-light hover-glow text-2xl'>
+              Echoes
+            </Link>
 
             {!user ? (
               <>
@@ -206,7 +209,7 @@ export default function Layout({ children, title = 'EchoShock' }: LayoutProps) {
             ) : (
               <>
                 {profile?.is_admin && (
-                  <Link href='/admin' className='text-text-light hover-glow'>
+                  <Link href='/admin' className='text-text-light hover-glow text-2xl'>
                     Admin
                   </Link>
                 )}
