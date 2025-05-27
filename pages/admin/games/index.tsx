@@ -37,7 +37,7 @@ export default function Admin({ games }: AdminProps) {
         throw new Error(errorData.error || "Failed to delete game");
       }
     
-      router.push("/admin");
+      router.push("/");
     } catch (err) {
       console.error(err);
     }

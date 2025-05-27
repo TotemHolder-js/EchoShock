@@ -7,6 +7,10 @@ import AuthGuard from "@/components/AuthGuard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import "react-markdown-editor-lite/lib/index.css";
+import MarkdownIt from "markdown-it";
+
+const mdParser = new MarkdownIt();
+
 
 // Dynamically import editor and markdown renderer to avoid SSR issues
 const MdEditor = dynamic(() => import("react-markdown-editor-lite"), { ssr: false });
@@ -101,7 +105,7 @@ export default function CreateEchoPage() {
               <MdEditor
                 value={form.content}
                 style={{ height: "400px" }}
-                renderHTML={(text) => text}
+                renderHTML={(text) => mdParser.render(text)}
                 onChange={handleEditorChange}
               />
             </div>
