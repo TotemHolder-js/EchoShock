@@ -1,66 +1,71 @@
 // pages/admin/echoes/new.tsx
-import { useState } from "react";
-import { useRouter } from "next/router";
-import dynamic from "next/dynamic";
-import Layout from "@/components/Layout";
-import AuthGuard from "@/components/AuthGuard";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import "react-markdown-editor-lite/lib/index.css";
-import MarkdownIt from "markdown-it";
+import { useState } from "react"
+import { useRouter } from "next/router"
+import dynamic from "next/dynamic"
+import Layout from "@/components/Layout"
+import AuthGuard from "@/components/AuthGuard"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import "react-markdown-editor-lite/lib/index.css"
+import MarkdownIt from "markdown-it"
 
-const mdParser = new MarkdownIt();
-
+const mdParser = new MarkdownIt()
 
 // Dynamically import editor and markdown renderer to avoid SSR issues
-const MdEditor = dynamic(() => import("react-markdown-editor-lite"), { ssr: false });
-const ReactMarkdown = dynamic(() => import("react-markdown"), { ssr: false });
+const MdEditor = dynamic(() => import("react-markdown-editor-lite"), {
+  ssr: false,
+})
+const ReactMarkdown = dynamic(() => import("react-markdown"), { ssr: false })
 
 interface FormData {
-  title: string;
-  excerpt: string;
-  content: string;
+  title: string
+  excerpt: string
+  content: string
 }
 
 export default function CreateEchoPage() {
-  const [form, setForm] = useState<FormData>({ title: "", excerpt: "", content: "" });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+  const [form, setForm] = useState<FormData>({
+    title: "",
+    excerpt: "",
+    content: "",
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = e.target
+    setForm((prev) => ({ ...prev, [name]: value }))
+  }
 
   // Editor onChange provides both HTML and raw text
   const handleEditorChange = ({ text }: { html: string; text: string }) => {
-    setForm((prev) => ({ ...prev, content: text }));
-  };
+    setForm((prev) => ({ ...prev, content: text }))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+    e.preventDefault()
+    setLoading(true)
+    setError(null)
     try {
       const response = await fetch("/api/echoes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
-      });
+      })
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to create echo");
+        const data = await response.json()
+        throw new Error(data.error || "Failed to create echo")
       }
-      router.push("/admin/echoes");
+      router.push("/admin/echoes")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unknown error");
+      setError(err instanceof Error ? err.message : "Unknown error")
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <AuthGuard>
@@ -101,7 +106,9 @@ export default function CreateEchoPage() {
             </div>
 
             <div>
-              <label className="block text-text-light mb-2">Content (Markdown)</label>
+              <label className="block text-text-light mb-2">
+                Content (Markdown)
+              </label>
               <MdEditor
                 value={form.content}
                 style={{ height: "400px" }}
@@ -133,5 +140,5 @@ export default function CreateEchoPage() {
         </div>
       </Layout>
     </AuthGuard>
-  );
+  )
 }

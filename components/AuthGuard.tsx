@@ -16,33 +16,53 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser()
-        
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+
         if (user === null) {
           // No user, redirect to home
           router.replace("/")
         } else {
+          const { data: profile, error } = await supabase
+            .from("profiles")
+            .select("is_admin")
+            .eq("user_id", user.id)
+            .single()
+
+          if (error) {
+            console.error("Error fetching profile:", error)
+            router.replace("/")
+            return
+          }
+
+          const isAdmin = profile?.is_admin === true
+
+          if (!isAdmin && router.pathname.startsWith("/admin")) {
+            router.replace("/")
+            return
+          }
           setUser(user)
           setLoading(false)
         }
       } catch (error) {
-        console.error('Error checking authentication:', error)
+        console.error("Error checking authentication:", error)
         router.replace("/")
       }
     }
-    
+
     getUser()
-    
+
     // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null)
-        if (!session?.user) {
-          router.replace("/")
-        }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+      if (!session?.user) {
+        router.replace("/")
       }
-    )
-    
+    })
+
     return () => {
       subscription.unsubscribe()
     }
@@ -50,8 +70,8 @@ export default function AuthGuard({ children }: AuthGuardProps) {
 
   if (loading) {
     return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <div className='text-text-light'>Loading...</div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-text-light">Loading...</div>
       </div>
     )
   }
