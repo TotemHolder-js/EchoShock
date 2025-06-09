@@ -41,9 +41,9 @@ export default function EchoesPage() {
         ) : echoes.length === 0 ? (
           <p className="text-center text-muted-foreground">No echoes found.</p>
         ) : (
-          <div className="space-y-12">
+          <div className="space-y-5">
             {echoes.map((echo) => (
-              <Link key={echo.id} href={`/echoes/${echo.id}`}>
+              <Link key={echo.id} href={`/echoes/${echo.id}`} className='block'>
                 <article className="bg-wood-light dark:bg-zinc-900 p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow cursor-pointer">
                   <h2 className="text-2xl font-semibold mb-2">{echo.title}</h2>
                   <p className="text-sm text-zinc-500 mb-2">

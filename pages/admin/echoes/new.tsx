@@ -99,7 +99,7 @@ export default function CreateEchoPage() {
                 value={form.excerpt}
                 onChange={handleChange}
                 rows={2}
-                className="input"
+                className="input text-foreground"
                 placeholder="Enter excerpt"
                 required
               />
@@ -119,7 +119,7 @@ export default function CreateEchoPage() {
 
             <div>
               <p className="block text-text-light mb-2">Preview</p>
-              <div className="prose max-w-none bg-white p-4 rounded">
+              <div className="prose max-w-none bg-white p-4 rounded text-foreground">
                 <ReactMarkdown children={form.content} />
               </div>
             </div>

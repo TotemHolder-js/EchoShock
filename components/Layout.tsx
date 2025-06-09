@@ -186,17 +186,23 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
             <Link href="/" className="text-text-light hover-glow text-2xl">
               Home
             </Link>
-            <Link href="#" className="text-text-light hover-glow text-2xl">
-              About
-            </Link>
-            <Link href="#" className="text-text-light hover-glow text-2xl">
-              Help Center
+            <Link
+              href="/games"
+              className="text-text-light hover-glow text-2xl"
+            >
+              Games
             </Link>
             <Link
               href="/echoes"
               className="text-text-light hover-glow text-2xl"
             >
               Echoes
+            </Link>
+            <Link href="#" className="text-text-light hover-glow text-2xl">
+              About
+            </Link>
+            <Link href="#" className="text-text-light hover-glow text-2xl">
+              Help Center
             </Link>
 
             {!user ? (

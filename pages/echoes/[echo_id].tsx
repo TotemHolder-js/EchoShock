@@ -42,7 +42,7 @@ export default function EchoPage({ echo }: { echo: Echo }) {
         <p className="text-sm text-zinc-500 mb-6">
           {new Date(echo.created_at).toLocaleDateString()}
         </p>
-        <div className="prose dark:prose-invert">
+        <div className="prose max-w-none  dark:prose-invert">
           <ReactMarkdown>
             {echo.content}
           </ReactMarkdown>
