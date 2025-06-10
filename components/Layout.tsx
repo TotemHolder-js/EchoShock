@@ -213,7 +213,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
                 </Button>
                 <Button
                   onClick={handleSignInClick}
-                  className="bg-yellow-900 border border-[#FFF8F0]/30 text-text-light hover:bg-[#FFF8F0]/10 hover-glow text-2xl"
+                  className="bg-steel-dark border border-ember text-offwhite hover:bg-steel-medium hover:shadow-[0_0_8px_2px_theme('colors.flame.start')] hover:text-ember transition-colors duration-200 text-2xl font-semibold"
                 >
                   Log In
                 </Button>
