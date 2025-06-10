@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import Layout from "@/components/Layout" // Reuse your layout if available
 import { createClient } from "@/utils/supabase/component"
-import Link from "next/link"
+import EchoCard from "@/components/EchoCard"
 
 interface Echo {
   id: number
@@ -10,6 +10,7 @@ interface Echo {
   excerpt: string
   content: string
   created_at: string
+  publish_date: string
 }
 
 export default function EchoesPage() {
@@ -23,7 +24,8 @@ export default function EchoesPage() {
       const { data, error } = await supabase
         .from("echoes")
         .select("*")
-        .order("created_at", { ascending: false })
+        .lte("publish_date", new Date().toISOString()) // ✅ Only published
+        .order("publish_date", { ascending: false })
 
       if (!error && data) setEchoes(data)
       setLoading(false)
@@ -43,17 +45,7 @@ export default function EchoesPage() {
         ) : (
           <div className="space-y-5">
             {echoes.map((echo) => (
-              <Link key={echo.id} href={`/echoes/${echo.id}`} className='block'>
-                <article className="bg-wood-light dark:bg-zinc-900 p-6 rounded-2xl shadow-md hover:shadow-lg transition-shadow cursor-pointer">
-                  <h2 className="text-2xl font-semibold mb-2">{echo.title}</h2>
-                  <p className="text-sm text-zinc-500 mb-2">
-                    {new Date(echo.created_at).toLocaleDateString()}
-                  </p>
-                  <p className="text-muted-foreground line-clamp-3">
-                    {echo.excerpt}
-                  </p>
-                </article>
-              </Link>
+              <EchoCard key={echo.id} echo={echo} />
             ))}
           </div>
         )}

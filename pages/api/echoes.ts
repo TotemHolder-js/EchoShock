@@ -28,24 +28,19 @@ export default async function handler(
   // DELETE - Remove an echo by ID
   if (req.method === "DELETE") {
     const { id } = req.body
-    const parsedId = parseInt(id?.toString() ?? "", 10)
 
-    if (isNaN(parsedId)) {
-      return res.status(400).json({ error: "`id` must be a number." })
+    if (!id || typeof id !== "string") {
+      return res.status(400).json({ error: "`id` must be a string (UUID)." })
     }
 
-    const { error } = await supabaseAdmin
-      .from("echoes")
-      .delete()
-      .eq("id", parsedId)
+    const { error } = await supabaseAdmin.from("echoes").delete().eq("id", id)
 
     if (error) return res.status(500).json({ error: error.message })
     return res.status(200).json({ message: "Deleted successfully" })
   }
-
   // POST - Create a new echo
   if (req.method === "POST") {
-    const { title, excerpt, content } = req.body
+    const { title, excerpt, content, publish_date } = req.body
 
     if (!title || !excerpt || !content) {
       return res.status(400).json({
@@ -60,6 +55,7 @@ export default async function handler(
         title,
         excerpt,
         content,
+        publish_date,
       })
       .select()
 

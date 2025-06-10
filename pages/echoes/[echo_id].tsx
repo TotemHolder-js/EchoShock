@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     .eq("id", echoId)
     .single()
 
-  if (error || !data) {
+  if (error || !data || new Date(data.publish_date) > new Date()) {
     return { notFound: true }
   }
 
@@ -43,9 +43,7 @@ export default function EchoPage({ echo }: { echo: Echo }) {
           {new Date(echo.created_at).toLocaleDateString()}
         </p>
         <div className="prose max-w-none  dark:prose-invert">
-          <ReactMarkdown>
-            {echo.content}
-          </ReactMarkdown>
+          <ReactMarkdown>{echo.content}</ReactMarkdown>
         </div>
       </div>
     </Layout>

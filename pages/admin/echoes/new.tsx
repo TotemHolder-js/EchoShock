@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import "react-markdown-editor-lite/lib/index.css"
 import MarkdownIt from "markdown-it"
+import { createClient } from "@/utils/supabase/component"
+import { getNextFridayNoon } from "@/utils/date_calc"
 
 const mdParser = new MarkdownIt()
 
@@ -21,6 +23,7 @@ interface FormData {
   title: string
   excerpt: string
   content: string
+  isGlade: boolean
 }
 
 export default function CreateEchoPage() {
@@ -28,6 +31,7 @@ export default function CreateEchoPage() {
     title: "",
     excerpt: "",
     content: "",
+    isGlade: false,
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -50,11 +54,19 @@ export default function CreateEchoPage() {
     setLoading(true)
     setError(null)
     try {
+      const payload = {
+        ...form,
+        publish_date: form.isGlade
+          ? getNextFridayNoon()
+          : new Date().toISOString(),
+      }
+
       const response = await fetch("/api/echoes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       })
+
       if (!response.ok) {
         const data = await response.json()
         throw new Error(data.error || "Failed to create echo")
@@ -70,17 +82,22 @@ export default function CreateEchoPage() {
   return (
     <AuthGuard>
       <Layout title="Write New Echo - EchoShock Admin">
-        <div className="max-w-2xl mx-auto">
-          <h1 className="text-2xl font-bold mb-6 hover-glow">Write New Echo</h1>
+        {/* Expanded layout with padding instead of fixed width */}
+        <div className="px-6 py-12">
+          <h1 className="text-3xl font-bold mb-8 hover-glow">Write New Echo</h1>
+
           {error && (
             <div className="bg-red-900/50 border border-red-700 text-text-light p-4 rounded-lg mb-6">
               {error}
             </div>
           )}
+
+          {/* Form */}
           <form
             onSubmit={handleSubmit}
-            className="bg-[#1C0F0A]/80 rounded-lg p-6 backdrop-blur-sm space-y-4"
+            className="bg-[#1C0F0A]/80 rounded-lg p-6 backdrop-blur-sm space-y-6"
           >
+            {/* Title */}
             <div>
               <label className="block text-text-light mb-2">Title</label>
               <Input
@@ -92,6 +109,7 @@ export default function CreateEchoPage() {
               />
             </div>
 
+            {/* Excerpt */}
             <div>
               <label className="block text-text-light mb-2">Excerpt</label>
               <textarea
@@ -105,6 +123,7 @@ export default function CreateEchoPage() {
               />
             </div>
 
+            {/* Markdown Editor */}
             <div>
               <label className="block text-text-light mb-2">
                 Content (Markdown)
@@ -114,16 +133,50 @@ export default function CreateEchoPage() {
                 style={{ height: "400px" }}
                 renderHTML={(text) => mdParser.render(text)}
                 onChange={handleEditorChange}
+                config={{
+                  view: {
+                    menu: true,
+                    md: true,
+                    html: false,
+                  },
+                }}
+                onImageUpload={async (file: File) => {
+                  const supabase = createClient()
+                  const filePath = `${Date.now()}_${file.name}`
+                  const { data, error } = await supabase.storage
+                    .from("echo-images")
+                    .upload(filePath, file)
+
+                  if (error || !data) {
+                    console.error("Image upload error:", error)
+                    throw new Error("Failed to upload image")
+                  }
+
+                  const { data: urlData } = supabase.storage
+                    .from("echo-images")
+                    .getPublicUrl(data.path)
+
+                  return urlData.publicUrl
+                }}
               />
             </div>
 
-            <div>
-              <p className="block text-text-light mb-2">Preview</p>
-              <div className="prose max-w-none bg-white p-4 rounded text-foreground">
-                <ReactMarkdown children={form.content} />
-              </div>
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="isGlade"
+                checked={form.isGlade}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, isGlade: e.target.checked }))
+                }
+                className="accent-pink-500"
+              />
+              <label htmlFor="isGlade" className="text-text-light">
+                Glade Echo?
+              </label>
             </div>
 
+            {/* Buttons */}
             <div className="flex justify-end space-x-4 pt-4">
               <Button
                 type="button"
@@ -137,6 +190,14 @@ export default function CreateEchoPage() {
               </Button>
             </div>
           </form>
+
+          {/* --- PREVIEW --- */}
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold mb-4 hover-glow">Preview</h2>
+            <div className="prose prose-invert max-w-none bg-[#1C0F0A]/80 p-6 rounded-lg">
+              <ReactMarkdown>{form.content}</ReactMarkdown>
+            </div>
+          </div>
         </div>
       </Layout>
     </AuthGuard>
