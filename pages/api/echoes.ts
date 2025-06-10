@@ -40,7 +40,7 @@ export default async function handler(
   }
   // POST - Create a new echo
   if (req.method === "POST") {
-    const { title, excerpt, content, publish_date } = req.body
+    const { title, excerpt, content, publish_date, thumbnail_url } = req.body
 
     if (!title || !excerpt || !content) {
       return res.status(400).json({
@@ -56,6 +56,7 @@ export default async function handler(
         excerpt,
         content,
         publish_date,
+        thumbnail_url,
       })
       .select()
 

@@ -11,6 +11,7 @@ interface Echo {
   content: string
   created_at: string
   publish_date: string
+  thumbnail_url: string | null
 }
 
 export default function EchoesPage() {

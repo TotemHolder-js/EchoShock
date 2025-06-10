@@ -24,6 +24,7 @@ interface FormData {
   excerpt: string
   content: string
   isGlade: boolean
+  thumbnail_url: string
 }
 
 export default function CreateEchoPage() {
@@ -32,8 +33,10 @@ export default function CreateEchoPage() {
     excerpt: "",
     content: "",
     isGlade: false,
+    thumbnail_url: ""
   })
   const [loading, setLoading] = useState(false)
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
@@ -54,12 +57,36 @@ export default function CreateEchoPage() {
     setLoading(true)
     setError(null)
     try {
+      let thumbnailUrl = ""
+
+      if (thumbnailFile) {
+        const supabase = createClient()
+        const filePath = `thumbnails/${Date.now()}_${thumbnailFile.name}`
+        const { data, error } = await supabase.storage
+          .from("echo-images")
+          .upload(filePath, thumbnailFile)
+
+        if (error || !data) {
+          throw new Error("Failed to upload thumbnail image")
+        }
+
+        const { data: urlData } = supabase.storage
+          .from("echo-images")
+          .getPublicUrl(filePath)
+
+        thumbnailUrl = urlData.publicUrl
+      }
+
       const payload = {
         ...form,
         publish_date: form.isGlade
           ? getNextFridayNoon()
           : new Date().toISOString(),
+        thumbnail_url: thumbnailUrl || null,
       }
+
+      console.log("🖼️ Thumbnail URL:", thumbnailUrl)
+      console.log("📦 Payload:", payload)
 
       const response = await fetch("/api/echoes", {
         method: "POST",
@@ -174,6 +201,18 @@ export default function CreateEchoPage() {
               <label htmlFor="isGlade" className="text-text-light">
                 Glade Echo?
               </label>
+            </div>
+
+            <div>
+              <label className="block text-text-light mb-2">
+                Thumbnail Image
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setThumbnailFile(e.target.files?.[0] || null)}
+                className="text-text-light"
+              />
             </div>
 
             {/* Buttons */}

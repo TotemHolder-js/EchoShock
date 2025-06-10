@@ -186,10 +186,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
             <Link href="/" className="text-text-light hover-glow text-2xl">
               Home
             </Link>
-            <Link
-              href="/games"
-              className="text-text-light hover-glow text-2xl"
-            >
+            <Link href="/games" className="text-text-light hover-glow text-2xl">
               Games
             </Link>
             <Link
@@ -198,10 +195,10 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
             >
               Echoes
             </Link>
-            <Link href="#" className="text-text-light hover-glow text-2xl">
+            <Link href="/about" className="text-text-light hover-glow text-2xl">
               About
             </Link>
-            <Link href="#" className="text-text-light hover-glow text-2xl">
+            <Link href="/help-center" className="text-text-light hover-glow text-2xl">
               Help Center
             </Link>
 
@@ -283,6 +280,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
               </p>
             </div>
             <div className="flex gap-6">
+              <p className="hover-glow">Follow our socials &#10140;</p>
               <a
                 href="https://www.instagram.com/playechoshock/"
                 target="_blank"
