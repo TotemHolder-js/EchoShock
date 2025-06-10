@@ -33,9 +33,12 @@ export default function Home({ games }: HomeProps) {
 
 export const getStaticProps: GetStaticProps = async () => {
   const supabase = createClient()
+
   const { data: games, error } = await supabase
     .from("featured_games")
     .select("*")
+    .lt("glade_entry", new Date().toISOString())
+    .gt("glade_exit", new Date().toISOString())
     .order("created_at", { ascending: false })
 
   if (error) {
@@ -44,7 +47,7 @@ export const getStaticProps: GetStaticProps = async () => {
       props: {
         games: [],
       },
-      revalidate: 60, // Revalidate every 60 seconds
+      revalidate: 60,
     }
   }
 
@@ -52,6 +55,7 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       games: games || [],
     },
-    revalidate: 60, // Revalidate every 60 seconds
+    revalidate: 60,
   }
 }
+
