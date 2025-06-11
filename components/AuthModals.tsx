@@ -123,7 +123,7 @@ export function SignInModal({
               type='email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className='bg-wood-light/50 border-text-light/20 text-text-light'
+              className='bg-wood-light/50 border-text-light/20'
               placeholder='your@email.com'
             />
           </div>
@@ -137,7 +137,7 @@ export function SignInModal({
               type='password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className='bg-wood-light/50 border-text-light/20 text-text-light'
+              className='bg-wood-light/50 border-text-light/20'
               placeholder='••••••••'
             />
           </div>
@@ -301,7 +301,7 @@ export function SignUpModal({
               id='username'
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className='bg-wood-light/50 border-text-light/20 text-text-light'
+              className='bg-wood-light/50 border-text-light/20'
               placeholder='Pick a username'
             />
           </div>
@@ -316,7 +316,7 @@ export function SignUpModal({
               type='email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className='bg-wood-light/50 border-text-light/20 text-text-light'
+              className='bg-wood-light/50 border-text-light/20'
               placeholder='your@email.com'
             />
           </div>
@@ -331,7 +331,7 @@ export function SignUpModal({
               type='password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className='bg-wood-light/50 border-text-light/20 text-text-light'
+              className='bg-wood-light/50 border-text-light/20'
               placeholder='••••••••'
             />
           </div>
@@ -347,7 +347,7 @@ export function SignUpModal({
               type='password'
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className='bg-wood-light/50 border-text-light/20 text-text-light'
+              className='bg-wood-light/50 border-text-light/20'
               placeholder='••••••••'
             />
           </div>
