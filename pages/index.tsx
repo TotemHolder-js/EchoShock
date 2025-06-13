@@ -20,6 +20,7 @@ interface Game {
   game_url: string
   image_url: string
   created_at: string
+  glade: number
 }
 
 interface HomeProps {

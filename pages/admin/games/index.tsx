@@ -57,7 +57,7 @@ export default function Admin({ games }: AdminProps) {
 
           <div className="bg-[#1C0F0A]/80 rounded-lg p-6 backdrop-blur-sm">
             {games.length === 0 ? (
-              <p className="text-text-light">
+              <p className=" ">
                 No featured games found. Add your first one!
               </p>
             ) : (

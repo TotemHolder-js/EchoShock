@@ -10,6 +10,7 @@ import "react-markdown-editor-lite/lib/index.css"
 import MarkdownIt from "markdown-it"
 import { createClient } from "@/utils/supabase/component"
 import { getNextFridayNoon } from "@/utils/date_calc"
+import { GamePicker } from "@/components/EchoGamePicker"
 
 const mdParser = new MarkdownIt()
 
@@ -27,16 +28,24 @@ interface FormData {
   thumbnail_url: string
 }
 
+interface GameOption {
+  id: number
+  title: string
+}
+
 export default function CreateEchoPage() {
   const [form, setForm] = useState<FormData>({
     title: "",
     excerpt: "",
     content: "",
     isGlade: false,
-    thumbnail_url: ""
+    thumbnail_url: "",
   })
   const [loading, setLoading] = useState(false)
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null)
+  const [selectedGames, setSelectedGames] = useState<number[]>([])
+  const [availableGames, setAvailableGames] = useState<GameOption[]>([])
+  const [showPicker, setShowPicker] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
@@ -50,6 +59,21 @@ export default function CreateEchoPage() {
   // Editor onChange provides both HTML and raw text
   const handleEditorChange = ({ text }: { html: string; text: string }) => {
     setForm((prev) => ({ ...prev, content: text }))
+  }
+
+  const fetchLatestGames = async () => {
+    const supabase = createClient()
+    const { data, error } = await supabase
+      .from("featured_games")
+      .select("id, title")
+      .order("created_at", { ascending: false })
+      .limit(5)
+
+    if (error) {
+      console.error("Error fetching games:", error)
+      return
+    }
+    setAvailableGames(data)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -88,15 +112,32 @@ export default function CreateEchoPage() {
       console.log("🖼️ Thumbnail URL:", thumbnailUrl)
       console.log("📦 Payload:", payload)
 
+      // Replace your fetch block with:
       const response = await fetch("/api/echoes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...payload,
+          game_ids: selectedGames,
+        }),
       })
-
       if (!response.ok) {
-        const data = await response.json()
-        throw new Error(data.error || "Failed to create echo")
+        const errData = await response.json()
+        throw new Error(errData.error || "Failed to create echo")
+      }
+      // ← parse once
+      const echoed = await response.json()
+      const newEchoId = echoed.id
+
+      // Use a different name for the client here
+      const supa = createClient()
+      const { error: updateError } = await supa
+        .from("featured_games")
+        .update({ glade: newEchoId })
+        .in("id", selectedGames)
+
+      if (updateError) {
+        console.error("Failed to link games to glade:", updateError)
       }
       router.push("/admin/echoes")
     } catch (err) {
@@ -108,13 +149,13 @@ export default function CreateEchoPage() {
 
   return (
     <AuthGuard>
-      <Layout title="Write New Echo - EchoShock Admin">
+      <Layout title='Write New Echo - EchoShock Admin'>
         {/* Expanded layout with padding instead of fixed width */}
-        <div className="px-6 py-12">
-          <h1 className="text-3xl font-bold mb-8 hover-glow">Write New Echo</h1>
+        <div className='px-6 py-12'>
+          <h1 className='text-3xl font-bold mb-8 hover-glow'>Write New Echo</h1>
 
           {error && (
-            <div className="bg-red-900/50 border border-red-700 text-text-light p-4 rounded-lg mb-6">
+            <div className='bg-red-900/50 border border-red-700   p-4 rounded-lg mb-6'>
               {error}
             </div>
           )}
@@ -122,37 +163,37 @@ export default function CreateEchoPage() {
           {/* Form */}
           <form
             onSubmit={handleSubmit}
-            className="bg-[#1C0F0A]/80 rounded-lg p-6 backdrop-blur-sm space-y-6"
+            className='bg-[#1C0F0A]/80 rounded-lg p-6 backdrop-blur-sm space-y-6'
           >
             {/* Title */}
             <div>
-              <label className="block text-text-light mb-2">Title</label>
+              <label className='block   mb-2'>Title</label>
               <Input
-                name="title"
+                name='title'
                 value={form.title}
                 onChange={handleChange}
                 required
-                placeholder="Enter echo title"
+                placeholder='Enter echo title'
               />
             </div>
 
             {/* Excerpt */}
             <div>
-              <label className="block text-text-light mb-2">Excerpt</label>
+              <label className='block   mb-2'>Excerpt</label>
               <textarea
-                name="excerpt"
+                name='excerpt'
                 value={form.excerpt}
                 onChange={handleChange}
                 rows={2}
-                className="input text-foreground"
-                placeholder="Enter excerpt"
+                className='input text-background'
+                placeholder='Enter excerpt'
                 required
               />
             </div>
 
             {/* Markdown Editor */}
             <div>
-              <label className="block text-text-light mb-2">
+              <label className='block   mb-2'>
                 Content (Markdown)
               </label>
               <MdEditor
@@ -188,52 +229,89 @@ export default function CreateEchoPage() {
               />
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className='flex items-center space-x-2'>
               <input
-                type="checkbox"
-                id="isGlade"
+                type='checkbox'
+                id='isGlade'
                 checked={form.isGlade}
                 onChange={(e) =>
                   setForm((prev) => ({ ...prev, isGlade: e.target.checked }))
                 }
-                className="accent-pink-500"
+                className='accent-pink-500'
               />
-              <label htmlFor="isGlade" className="text-text-light">
+              <label htmlFor='isGlade' className=' '>
                 Glade Echo?
               </label>
             </div>
 
+            {form.isGlade && (
+              <div className='flex items-center space-x-2'>
+                <Button
+                  type='button'
+                  onClick={async () => {
+                    await fetchLatestGames()
+                    setShowPicker(true)
+                  }}
+                  className='bg-wood-medium hover:bg-wood-light  '
+                >
+                  Choose Games
+                </Button>
+                {selectedGames.length > 0 && (
+                  <span className=' '>
+                    {selectedGames.length} game
+                    {selectedGames.length > 1 ? "s" : ""} selected
+                  </span>
+                )}
+              </div>
+            )}
+            {showPicker && (
+              <GamePicker
+                games={availableGames}
+                selected={selectedGames}
+                visible={showPicker}
+                onToggle={(id) =>
+                  setSelectedGames((prev) =>
+                    prev.includes(id)
+                      ? prev.filter((x) => x !== id)
+                      : [...prev, id]
+                  )
+                }
+                onCancel={() => setShowPicker(false)}
+                onConfirm={() => setShowPicker(false)}
+              />
+            )}
+
             <div>
-              <label className="block text-text-light mb-2">
+              <label className='block   mb-2'>
                 Thumbnail Image
               </label>
               <input
-                type="file"
-                accept="image/*"
+                type='file'
+                accept='image/*'
                 onChange={(e) => setThumbnailFile(e.target.files?.[0] || null)}
-                className="text-text-light"
+                className=' '
               />
             </div>
 
             {/* Buttons */}
-            <div className="flex justify-end space-x-4 pt-4">
+            <div className='flex justify-end space-x-4 pt-4'>
               <Button
-                type="button"
+                type='button'
                 onClick={() => router.push("/admin/echoes")}
-                className="bg-transparent border border-text-light/30 hover:bg-[#FFF8F0]/10 text-text-light px-4 py-2 rounded-lg"
+                className='bg-transparent border border-text-light/30 hover:bg-[#FFF8F0]/10   px-4 py-2 rounded-lg'
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={loading} className="btn">
+              <Button type='submit' disabled={loading} className='btn'>
                 {loading ? "Publishing…" : "Publish Echo"}
               </Button>
             </div>
           </form>
 
           {/* --- PREVIEW --- */}
-          <div className="mt-12">
-            <h2 className="text-2xl font-bold mb-4 hover-glow">Preview</h2>
-            <div className="prose prose-invert max-w-none bg-[#1C0F0A]/80 p-6 rounded-lg">
+          <div className='mt-12'>
+            <h2 className='text-2xl font-bold mb-4 hover-glow'>Preview</h2>
+            <div className='prose prose-invert max-w-none bg-[#1C0F0A]/80 p-6 rounded-lg'>
               <ReactMarkdown>{form.content}</ReactMarkdown>
             </div>
           </div>

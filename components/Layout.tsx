@@ -167,7 +167,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
           />
         )}
 
-        <header className="p-4 bg-[#1C0F0A]/90 text-text-light flex justify-between items-center backdrop-blur-sm">
+        <header className="p-4 bg-[#1C0F0A]/90   flex justify-between items-center backdrop-blur-sm">
           <div className="flex items-center space-x-3">
             <Link href="/">
               <Logo
@@ -183,22 +183,22 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
             </div>
           </div>
           <nav className="flex items-center gap-6">
-            <Link href="/" className="text-text-light hover-glow text-2xl">
+            <Link href="/" className="  hover-glow text-2xl">
               Home
             </Link>
-            <Link href="/games" className="text-text-light hover-glow text-2xl">
+            <Link href="/games" className="  hover-glow text-2xl">
               Games
             </Link>
             <Link
               href="/echoes"
-              className="text-text-light hover-glow text-2xl"
+              className="  hover-glow text-2xl"
             >
               Echoes
             </Link>
-            <Link href="/about" className="text-text-light hover-glow text-2xl">
+            <Link href="/about" className="  hover-glow text-2xl">
               About
             </Link>
-            <Link href="/help-center" className="text-text-light hover-glow text-2xl">
+            <Link href="/help-center" className="  hover-glow text-2xl">
               Help Center
             </Link>
 
@@ -207,7 +207,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
                 <Button
                   onClick={handleSignUpClick}
                   variant="outline"
-                  className="bg-transparent border-[#FFF8F0]/30 text-text-light hover:bg-[#FFF8F0]/10 hover-glow text-2xl"
+                  className="bg-transparent border-[#FFF8F0]/30   hover:bg-[#FFF8F0]/10 hover-glow text-2xl"
                 >
                   Sign Up
                 </Button>
@@ -223,7 +223,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
                 {profile?.is_admin && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="text-text-light hover-glow text-2xl">
+                      <button className="  hover-glow text-2xl">
                         Admin ▼
                       </button>
                     </DropdownMenuTrigger>
@@ -244,7 +244,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
                     className="p-1 rounded-full hover:bg-[#FFF8F0]/10"
                   >
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback className="bg-transparent text-text-light">
+                      <AvatarFallback className="bg-transparent  ">
                         {profile?.user_name?.[0]?.toUpperCase() ?? "?"}
                       </AvatarFallback>
                     </Avatar>
@@ -252,12 +252,12 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
 
                   {menuOpen && (
                     <div className="absolute right-0 mt-2 w-40 bg-[#1E1E1E] rounded-lg shadow-lg p-4">
-                      <div className="pb-2 border-b border-[#FFF8F0]/30 text-text-light">
+                      <div className="pb-2 border-b border-[#FFF8F0]/30  ">
                         {profile?.user_name ?? "Unknown User"}
                       </div>
                       <button
                         onClick={() => supabase.auth.signOut()}
-                        className="mt-2 w-full text-left text-text-light hover:text-white"
+                        className="mt-2 w-full text-left   hover:text-white"
                       >
                         Log Out
                       </button>
@@ -271,7 +271,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
 
         <main className="p-8 flex-grow">{children}</main>
 
-        <footer className="bg-[#1C0F0A]/90 text-text-light p-8 backdrop-blur-sm">
+        <footer className="bg-[#1C0F0A]/90   p-8 backdrop-blur-sm">
           <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
               <p className="hover-glow">
@@ -284,7 +284,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
               <a
                 href="https://www.instagram.com/playechoshock/"
                 target="_blank"
-                className="text-text-light hover-glow"
+                className="  hover-glow"
               >
                 <svg
                   className="w-6 h-6"
@@ -302,7 +302,7 @@ export default function Layout({ children, title = "EchoShock" }: LayoutProps) {
               <a
                 href="https://www.tiktok.com/@playechoshock"
                 target="_blank"
-                className="text-text-light hover-glow"
+                className="  hover-glow"
               >
                 <svg
                   className="w-6 h-6"

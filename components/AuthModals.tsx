@@ -87,7 +87,6 @@ export function SignInModal({
   // Function to switch to sign up
   const handleSwitchToSignUp = () => {
     console.log("DIRECT: Switching to sign up")
-    alert("Switching to sign up")
     onClose()
     setTimeout(() => onSwitch(), 100)
   }
@@ -102,7 +101,7 @@ export function SignInModal({
         </DialogHeader>
 
         {error && (
-          <div className='bg-red-900/50 border border-red-700 text-text-light p-4 rounded-lg'>
+          <div className='bg-red-900/50 border border-red-700   p-4 rounded-lg'>
             {error}
           </div>
         )}
@@ -117,7 +116,7 @@ export function SignInModal({
               type='text'
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              className='bg-wood-light/50 border-text-light/20'
+              className='bg-wood-light/50 border-text-light/20 text-background'
               placeholder='you@example.com or yourUsername'
             />
           </div>
@@ -125,12 +124,12 @@ export function SignInModal({
           <div>
             <label
               htmlFor='password'
-              className='text-text-light mb-2 flex items-center hover-glow'
+              className='  mb-2 flex items-center hover-glow'
             >
               Password
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info className='ml-2 h-4 w-4 cursor-pointer text-text-light/60' />
+                  <Info className='ml-2 h-4 w-4 cursor-pointer  /60' />
                 </TooltipTrigger>
                 <TooltipContent side='right' align='start'>
                   <p className='text-xs'>
@@ -145,7 +144,7 @@ export function SignInModal({
               type='password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className='bg-wood-light/50 border-text-light/20'
+              className='bg-wood-light/50 border-text-light/20 text-background'
               placeholder='••••••••'
             />
           </div>
@@ -155,7 +154,7 @@ export function SignInModal({
               type='button'
               disabled={loading}
               variant='default'
-              className='bg-wood-medium hover:bg-wood-light text-text-light hover-glow'
+              className='bg-wood-medium hover:bg-wood-light   hover-glow'
               onClick={handleSignInButtonClick}
             >
               {loading ? "Signing in..." : "Sign In"}
@@ -299,12 +298,12 @@ export function SignUpModal({
         </DialogHeader>
 
         {error && (
-          <div className='bg-red-900/50 border border-red-700 text-text-light p-4 rounded-lg'>
+          <div className='bg-red-900/50 border border-red-700   p-4 rounded-lg'>
             {error}
           </div>
         )}
         {message && (
-          <div className='bg-green-900/50 border border-green-700 text-text-light p-4 rounded-lg'>
+          <div className='bg-green-900/50 border border-green-700   p-4 rounded-lg'>
             {message}
           </div>
         )}
@@ -314,7 +313,7 @@ export function SignUpModal({
           <div>
             <label
               htmlFor='username'
-              className='block text-text-light mb-2 hover-glow'
+              className='block   mb-2 hover-glow'
             >
               Username
             </label>
@@ -322,7 +321,7 @@ export function SignUpModal({
               id='username'
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className='bg-wood-light/50 border-text-light/20'
+              className='bg-wood-light/50 border-text-light/20 text-background'
               placeholder='Pick a username'
             />
           </div>
@@ -331,7 +330,7 @@ export function SignUpModal({
           <div>
             <label
               htmlFor='email'
-              className='block text-text-light mb-2 hover-glow'
+              className='block   mb-2 hover-glow'
             >
               Email
             </label>
@@ -340,7 +339,7 @@ export function SignUpModal({
               type='email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className='bg-wood-light/50 border-text-light/20'
+              className='bg-wood-light/50 border-text-light/20 text-background'
               placeholder='your@email.com'
             />
           </div>
@@ -349,7 +348,7 @@ export function SignUpModal({
           <div>
             <label
               htmlFor='password'
-              className='block text-text-light mb-2 hover-glow'
+              className='block   mb-2 hover-glow'
             >
               Password
             </label>
@@ -358,7 +357,7 @@ export function SignUpModal({
               type='password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className='bg-wood-light/50 border-text-light/20'
+              className='bg-wood-light/50 border-text-light/20 text-background'
               placeholder='••••••••'
             />
           </div>
@@ -366,7 +365,7 @@ export function SignUpModal({
           <div>
             <label
               htmlFor='confirmPassword'
-              className='block text-text-light mb-2 hover-glow'
+              className='block   mb-2 hover-glow'
             >
               Confirm Password
             </label>
@@ -375,7 +374,7 @@ export function SignUpModal({
               type='password'
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className='bg-wood-light/50 border-text-light/20'
+              className='bg-wood-light/50 border-text-light/20 text-background'
               placeholder='••••••••'
             />
           </div>
@@ -386,7 +385,7 @@ export function SignUpModal({
               type='button'
               disabled={loading}
               variant='default'
-              className='bg-wood-medium hover:bg-wood-light text-text-light hover-glow'
+              className='bg-wood-medium hover:bg-wood-light   hover-glow'
               onClick={handleSignUpButtonClick}
             >
               {loading ? "Creating Account..." : "Sign Up"}

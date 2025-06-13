@@ -97,7 +97,7 @@ export default function CreateGame() {
           </h1>
 
           {error && (
-            <div className='bg-red-900/50 border border-red-700 text-text-light p-4 rounded-lg mb-6'>
+            <div className='bg-red-900/50 border border-red-700   p-4 rounded-lg mb-6'>
               {error}
             </div>
           )}
@@ -107,7 +107,7 @@ export default function CreateGame() {
             className='bg-[#1C0F0A]/80 rounded-lg p-6 backdrop-blur-sm space-y-4'
           >
             <div>
-              <label htmlFor='title' className='block text-text-light mb-2'>
+              <label htmlFor='title' className='block   mb-2'>
                 Game Title
               </label>
               <Input
@@ -125,7 +125,7 @@ export default function CreateGame() {
             <div>
               <label
                 htmlFor='description'
-                className='block text-text-light mb-2'
+                className='block   mb-2'
               >
                 Description
               </label>
@@ -136,13 +136,13 @@ export default function CreateGame() {
                 onChange={handleChange}
                 required
                 rows={4}
-                className='input text-foreground'
+                className='input text-background'
                 placeholder='Enter game description'
               />
             </div>
 
             <div>
-              <label htmlFor='game_url' className='block text-text-light mb-2'>
+              <label htmlFor='game_url' className='block   mb-2'>
                 Game URL
               </label>
               <Input
@@ -159,7 +159,7 @@ export default function CreateGame() {
             <div>
               <label
                 htmlFor='game_image'
-                className='block text-text-light mb-2'
+                className='block   mb-2'
               >
                 Upload Image
               </label>
@@ -169,14 +169,14 @@ export default function CreateGame() {
                 type='file'
                 accept='image/*'
                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                className='text-text-light'
+                className=' '
               />
             </div>
             <div className='flex justify-end space-x-4 pt-4'>
               <Button
                 type='button'
-                onClick={() => router.push('/admin')}
-                className='bg-transparent border border-text-light/30 hover:bg-[#FFF8F0]/10 text-text-light px-4 py-2 rounded-lg transition-colors duration-300'
+                onClick={() => router.push('/admin/games')}
+                className='bg-transparent border border-text-light/30 hover:bg-[#FFF8F0]/10   px-4 py-2 rounded-lg transition-colors duration-300'
               >
                 Cancel
               </Button>

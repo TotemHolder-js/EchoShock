@@ -8,6 +8,7 @@ interface Game {
   game_url: string
   image_url: string
   created_at: string
+  glade: number
 }
 
 interface GameCardProps {
@@ -28,15 +29,25 @@ export default function GameCard({ game }: GameCardProps) {
       </div>
       <div className='p-4'>
         <h3 className='hover-glow font-bold text-[#FFF8F0]/70'>{game.title}</h3>
-        <p className='hover-glow text-sm text-[#FFF8F0]/50 mb-3'>{game.description}</p>
-        <Link
-          href={game.game_url}
-          target='_blank'
-          rel='noopener noreferrer'
-          className='hover-glow inline-block btn text-sm'
-        >
-          Play Game
-        </Link>
+        <p className='hover-glow text-sm text-[#FFF8F0]/50 mb-3'>
+          {game.description}
+        </p>
+        <div className='flex justify-between items-center'>
+          <Link
+            href={game.game_url}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='hover-glow inline-block btn text-sm'
+          >
+            Play Game
+          </Link>
+          <Link
+            href={`/echoes/${game.glade}`}
+            className='hover-glow inline-block btn text-sm'
+          >
+            Read Review
+          </Link>
+        </div>
       </div>
     </div>
   )

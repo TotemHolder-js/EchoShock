@@ -11,7 +11,7 @@ export default function HelpCenter() {
           <div className="w-full h-48 bg-[#1C0F0A]/80 rounded-2xl mb-8 flex items-center justify-center text-yellow-400 text-3xl font-bold shadow-lg border border-[#FFF8F0]/10">
             [Signal Interference… Loading Support]
           </div>
-          <h1 className="text-5xl font-extrabold text-text-light hover-glow mb-4">
+          <h1 className="text-5xl font-extrabold   hover-glow mb-4">
             Help Center
           </h1>
           <p className="text-lg text-[#FFF8F0]/80 mb-6 max-w-2xl mx-auto">
@@ -78,7 +78,7 @@ export default function HelpCenter() {
           </p>
           <a
             href="mailto:support@echoshock.com"
-            className="inline-block bg-yellow-900 border border-[#FFF8F0]/30 text-text-light hover:bg-[#FFF8F0]/10 hover-glow font-semibold py-3 px-8 rounded-full shadow transition text-2xl"
+            className="inline-block bg-yellow-900 border border-[#FFF8F0]/30   hover:bg-[#FFF8F0]/10 hover-glow font-semibold py-3 px-8 rounded-full shadow transition text-2xl"
           >
             Contact Support
           </a>

@@ -44,7 +44,7 @@ export default function ManageEchoes({ echoes }: ManageEchoesProps) {
 
           <div className="bg-[#1C0F0A]/80 rounded-lg p-6 backdrop-blur-sm">
             {echoes.length === 0 ? (
-              <p className="text-text-light">
+              <p className=" ">
                 No echoes found. Write your first one!
               </p>
             ) : (

@@ -68,7 +68,7 @@ export default function About() {
             </p>
             <a
               href="/signup"
-              className="inline-block bg-yellow-900 border border-yellow-500/30 hover:bg-yellow-800 transition px-8 py-4 rounded-full text-xl font-semibold text-text-light hover-glow shadow-md"
+              className="inline-block bg-yellow-900 border border-yellow-500/30 hover:bg-yellow-800 transition px-8 py-4 rounded-full text-xl font-semibold   hover-glow shadow-md"
             >
               Join the Signal
             </a>
