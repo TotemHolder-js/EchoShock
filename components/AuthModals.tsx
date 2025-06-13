@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { useRouter } from 'next/router'
-import { createClient } from '@/utils/supabase/component'
+import { useState } from "react"
+import { useRouter } from "next/router"
+import { createClient } from "@/utils/supabase/component"
 import {
   Dialog,
   DialogContent,
@@ -8,9 +8,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip"
+import { Info } from "lucide-react"
+import { USERNAME_REGEX, PASSWORD_REGEX } from "@/utils/constants"
+import PasswordChecker from "./PasswordChecker"
 
 export function SignInModal({
   onClose,
@@ -19,71 +27,57 @@ export function SignInModal({
   onClose: () => void
   onSwitch: () => void
 }) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [identifier, setIdentifier] = useState("")
+  const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log(
-      '%c AUTH: Sign in form submitted',
-      'background: #222; color: #bada55; font-size: 14px'
-    )
-    setLoading(true)
-    setError(null)
-
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-
-      if (error) throw error
-
-      console.log('Sign in successful')
-      // Close modal and refresh page after successful sign in
-      onClose()
-      router.reload()
-    } catch (error: any) {
-      console.error('Sign in error:', error)
-      setError(error.message || 'An error occurred during sign in')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   // Function to handle sign in button click directly
-  const handleSignInButtonClick = () => {
-    console.log('DIRECT: Sign In button clicked')
-    alert('Sign In button clicked') // This will show a visible alert
+  const handleSignInButtonClick = async () => {
+    console.log("DIRECT: Sign In button clicked")
+    alert("Sign In button clicked") // This will show a visible alert
 
     setLoading(true)
     setError(null)
+    let emailToUse = identifier.trim()
+
+    if (!identifier.includes("@")) {
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("user_name", identifier)
+        .maybeSingle()
+
+      if (profileError || !profile?.email) {
+        throw new Error("No user found with that username.")
+      }
+
+      emailToUse = profile.email
+    }
 
     supabase.auth
       .signInWithPassword({
-        email,
+        email: emailToUse,
         password,
       })
       .then(({ error }) => {
         if (error) {
-          console.error('Sign in error:', error)
-          alert('Error: ' + error.message)
-          setError(error.message || 'An error occurred during sign in')
+          console.error("Sign in error:", error)
+          alert("Error: " + error.message)
+          setError(error.message || "An error occurred during sign in")
         } else {
-          console.log('Sign in successful')
-          alert('Sign in successful')
+          console.log("Sign in successful")
+          alert("Sign in successful")
           onClose()
           router.reload()
         }
       })
       .catch((error) => {
-        console.error('Sign in exception:', error)
-        alert('Exception: ' + error.message)
-        setError(error.message || 'An error occurred during sign in')
+        console.error("Sign in exception:", error)
+        alert("Exception: " + error.message)
+        setError(error.message || "An error occurred during sign in")
       })
       .finally(() => {
         setLoading(false)
@@ -92,8 +86,8 @@ export function SignInModal({
 
   // Function to switch to sign up
   const handleSwitchToSignUp = () => {
-    console.log('DIRECT: Switching to sign up')
-    alert('Switching to sign up')
+    console.log("DIRECT: Switching to sign up")
+    alert("Switching to sign up")
     onClose()
     setTimeout(() => onSwitch(), 100)
   }
@@ -115,22 +109,36 @@ export function SignInModal({
 
         <div className='space-y-4'>
           <div>
-            <label htmlFor='email' className='block text-text-light mb-2'>
-              Email
+            <label htmlFor='identifier' className='hover-glow'>
+              Username or Email
             </label>
             <Input
-              id='email'
-              type='email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id='identifier'
+              type='text'
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               className='bg-wood-light/50 border-text-light/20'
-              placeholder='your@email.com'
+              placeholder='you@example.com or yourUsername'
             />
           </div>
 
           <div>
-            <label htmlFor='password' className='block text-text-light mb-2'>
+            <label
+              htmlFor='password'
+              className='text-text-light mb-2 flex items-center hover-glow'
+            >
               Password
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className='ml-2 h-4 w-4 cursor-pointer text-text-light/60' />
+                </TooltipTrigger>
+                <TooltipContent side='right' align='start'>
+                  <p className='text-xs'>
+                    ≥8 chars, 1 uppercase, 1 lowercase, 1 number & 1 special
+                    char
+                  </p>
+                </TooltipContent>
+              </Tooltip>
             </label>
             <Input
               id='password'
@@ -150,12 +158,12 @@ export function SignInModal({
               className='bg-wood-medium hover:bg-wood-light text-text-light hover-glow'
               onClick={handleSignInButtonClick}
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? "Signing in..." : "Sign In"}
             </Button>
 
             <Button
               type='button'
-              variant='ghost'
+              variant='link'
               onClick={handleSwitchToSignUp}
               className='text-spiritual-yellow hover-glow'
             >
@@ -175,10 +183,10 @@ export function SignUpModal({
   onClose: () => void
   onSwitch: () => void
 }) {
-  const [username, setUsername] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
@@ -190,14 +198,23 @@ export function SignUpModal({
     setError(null)
     setMessage(null)
 
-    // 1) Basic client‐side validations
-    if (!username.trim()) {
-      setError('Please enter a username')
+    const name = username.trim()
+    if (!USERNAME_REGEX.test(name)) {
+      setError(
+        "Username must be 3-30 characters long and only contain letters, numbers, dots, underscores or hyphens."
+      )
       setLoading(false)
       return
     }
+
+    if (!PASSWORD_REGEX.test(password)) {
+      setError("Password must meet the specified requirements")
+      setLoading(false)
+      return
+    }
+
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError("Passwords do not match")
       setLoading(false)
       return
     }
@@ -205,19 +222,19 @@ export function SignUpModal({
     try {
       // 2) Check username availability
       const { data: existingUser, error: selectError } = await supabase
-        .from('profiles')
-        .select('user_name')
-        .eq('user_name', username.trim())
+        .from("profiles")
+        .select("user_name")
+        .eq("user_name", name)
         .maybeSingle()
 
       if (selectError) {
-        console.error('Error checking username:', selectError)
-        setError('Unable to verify username availability.')
+        console.error("Error checking username:", selectError)
+        setError("Unable to verify username availability.")
         setLoading(false)
         return
       }
       if (existingUser) {
-        setError('That username is already taken. Please choose another.')
+        setError("That username is already taken. Please choose another.")
         setLoading(false)
         return
       }
@@ -229,20 +246,21 @@ export function SignUpModal({
 
       const newUser = signUpData.user
       if (!newUser)
-        throw new Error('Sign-up succeeded but no user was returned.')
+        throw new Error("Sign-up succeeded but no user was returned.")
 
       // 4) Insert profile row
       const { data: profileRow, error: profileError } = await supabase
-        .from('profiles')
+        .from("profiles")
         .insert({
           user_id: newUser.id,
-          user_name: username.trim(),
+          user_name: name,
+          email: email,
           is_admin: false,
         })
         .select()
         .single()
       if (profileError) throw profileError
-      if (!profileRow) throw new Error('Profile insert returned no data.')
+      if (!profileRow) throw new Error("Profile insert returned no data.")
 
       // 5) Success
       setMessage(`Welcome aboard, ${profileRow.user_name}!`)
@@ -251,15 +269,15 @@ export function SignUpModal({
         router.reload()
       }, 1500)
     } catch (err: any) {
-      console.error('Sign-up/profile error:', err)
+      console.error("Sign-up/profile error:", err)
       // Handle unique‐constraint just in case
       if (
-        err.code === '23505' &&
-        err.message.includes('profiles_user_name_unique')
+        err.code === "23505" &&
+        err.message.includes("profiles_user_name_unique")
       ) {
-        setError('That username is already taken. Please choose another.')
+        setError("That username is already taken. Please choose another.")
       } else {
-        setError(err.message || 'An error occurred during sign up')
+        setError(err.message || "An error occurred during sign up")
       }
     } finally {
       setLoading(false)
@@ -294,7 +312,10 @@ export function SignUpModal({
         <div className='space-y-4'>
           {/* Username field */}
           <div>
-            <label htmlFor='username' className='block text-text-light mb-2'>
+            <label
+              htmlFor='username'
+              className='block text-text-light mb-2 hover-glow'
+            >
               Username
             </label>
             <Input
@@ -308,7 +329,10 @@ export function SignUpModal({
 
           {/* Email field */}
           <div>
-            <label htmlFor='email' className='block text-text-light mb-2'>
+            <label
+              htmlFor='email'
+              className='block text-text-light mb-2 hover-glow'
+            >
               Email
             </label>
             <Input
@@ -323,7 +347,10 @@ export function SignUpModal({
 
           {/* Password fields */}
           <div>
-            <label htmlFor='password' className='block text-text-light mb-2'>
+            <label
+              htmlFor='password'
+              className='block text-text-light mb-2 hover-glow'
+            >
               Password
             </label>
             <Input
@@ -335,10 +362,11 @@ export function SignUpModal({
               placeholder='••••••••'
             />
           </div>
+          <PasswordChecker password={password} />
           <div>
             <label
               htmlFor='confirmPassword'
-              className='block text-text-light mb-2'
+              className='block text-text-light mb-2 hover-glow'
             >
               Confirm Password
             </label>
@@ -361,7 +389,7 @@ export function SignUpModal({
               className='bg-wood-medium hover:bg-wood-light text-text-light hover-glow'
               onClick={handleSignUpButtonClick}
             >
-              {loading ? 'Creating Account...' : 'Sign Up'}
+              {loading ? "Creating Account..." : "Sign Up"}
             </Button>
             <Button
               type='button'
