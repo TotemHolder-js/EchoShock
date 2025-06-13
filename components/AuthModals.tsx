@@ -153,8 +153,8 @@ export function SignInModal({
             <Button
               type='button'
               disabled={loading}
-              variant='default'
-              className='bg-wood-medium hover:bg-wood-light   hover-glow'
+              variant='ghost'
+              className=''
               onClick={handleSignInButtonClick}
             >
               {loading ? "Signing in..." : "Sign In"}
@@ -384,15 +384,14 @@ export function SignUpModal({
             <Button
               type='button'
               disabled={loading}
-              variant='default'
-              className='bg-wood-medium hover:bg-wood-light   hover-glow'
+              variant='ghost'
               onClick={handleSignUpButtonClick}
             >
               {loading ? "Creating Account..." : "Sign Up"}
             </Button>
             <Button
               type='button'
-              variant='ghost'
+              variant='link'
               onClick={handleSwitchToSignIn}
               className='text-spiritual-yellow hover-glow'
             >
