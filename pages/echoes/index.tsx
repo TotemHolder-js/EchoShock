@@ -17,7 +17,7 @@ interface Echo {
 export default function EchoesPage() {
   const [echoes, setEchoes] = useState<Echo[]>([])
   const [loading, setLoading] = useState(true)
-
+  const [pinnedEcho, setPinnedEcho] = useState(null)
   const supabase = createClient()
 
   useEffect(() => {
@@ -29,6 +29,9 @@ export default function EchoesPage() {
         .order("publish_date", { ascending: false })
 
       if (!error && data) setEchoes(data)
+
+      const pinned = data?.find((e) => e.pinned)
+      setPinnedEcho(pinned)
       setLoading(false)
     }
 
@@ -36,19 +39,32 @@ export default function EchoesPage() {
   }, [])
 
   return (
-    <Layout title="Echoes - Blog">
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold mb-8 text-center">Echoes</h1>
+    <Layout title='Echoes - Blog'>
+      <div className='max-w-4xl mx-auto px-4 py-12'>
+        <h1 className='text-4xl font-bold mb-8 text-center'>Echoes</h1>
         {loading ? (
-          <p className="text-center text-muted-foreground">Loading...</p>
+          <p className='text-center text-muted-foreground'>Loading...</p>
         ) : echoes.length === 0 ? (
-          <p className="text-center text-muted-foreground">No echoes found.</p>
+          <p className='text-center text-muted-foreground'>No echoes found.</p>
         ) : (
-          <div className="space-y-5">
-            {echoes.map((echo) => (
-              <EchoCard key={echo.id} echo={echo} />
-            ))}
-          </div>
+          <>
+            {pinnedEcho && (
+              <div className='space-y-5'>
+                <h2 className='text-2xl font-bold mb-8 text-center'>
+                  Featured Echo
+                </h2>
+                <EchoCard echo={pinnedEcho} />
+              </div>
+            )}
+            <div className='space-y-5'>
+              <h2 className='text-2xl font-bold mb-8 text-center mt-4'>
+                All Echoes
+              </h2>
+              {echoes.map((echo) => (
+                <EchoCard key={echo.id} echo={echo} />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </Layout>
